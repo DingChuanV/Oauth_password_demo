@@ -2,10 +2,13 @@ package com.uin.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 
 /**
  * @author wanglufei
@@ -19,6 +22,24 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    AuthenticationManager authenticationManager;
+    @Autowired
+    UserDetailsService userDetailsService;
+
+    /**
+     * 密码模式是直接将我们的密码传给授权服务器
+     * 使用密码所需要的配置
+     *
+     * @param endpoints
+     * @author wanglufei
+     * @date 2022/4/11 10:41 PM
+     */
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        endpoints.authenticationManager(authenticationManager)
+                .userDetailsService(userDetailsService);
+    }
 
     /**
      * 授权服务器的4个端点
@@ -44,8 +65,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .redirectUris("http://www.baidu.com")
                 //作用域
                 .scopes("all")
-                //Grant_type  授权码模式
-                .authorizedGrantTypes("authorization_code");
+                //Grant_type  密码模式
+                .authorizedGrantTypes("password");
     }
 
 }
