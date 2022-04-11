@@ -1,6 +1,10 @@
 # Oauth_password_demo
 Spring Security OAuth2.0之密码模式
 
+## 实现原理
+
+<img src="https://bearbrick0.oss-cn-qingdao.aliyuncs.com/images/img/202204111801191.png" alt="image-20220411180153181" style="zoom:50%;" />
+
 ## 实现步骤
 
 和授权码模式 部署项目一致 只需要更改配置
