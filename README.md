@@ -119,3 +119,92 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 <img src="https://bearbrick0.oss-cn-qingdao.aliyuncs.com/images/img/202204112300696.png" alt="image-20220411225942267" style="zoom:50%;" />
 
 <img src="https://bearbrick0.oss-cn-qingdao.aliyuncs.com/images/img/202204112301466.png" alt="image-20220411230110858" style="zoom:50%;" />
+
+## 使用redis存储token 令牌
+因为我们的Token令牌 都是放在内存中的 这肯定是不合理的
+1. 导入依赖
+```xml
+        <!--redis依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!--对象池依赖-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+```
+2. 配置redis
+```properties
+spring.redis.host=localhost
+```
+3. redisConfig
+```java
+/**
+ * @author wanglufei
+ * @description: 使用redis存储我们的token
+ * Redis配置类
+ * @date 2022/4/11/11:17 PM
+ */
+
+@Configuration
+public class RedisConfig {
+
+    @Autowired
+    RedisConnectionFactory redisConnectionFactory;
+
+    /**
+     * TokenStore会自动连接redis，将token存储到redis中
+     *
+     * @return org.springframework.security.oauth2.provider.token.TokenStore
+     * @author wanglufei
+     * @date 2022/4/11 11:20 PM
+     */
+    @Bean
+    public TokenStore redisTokenStore() {
+        return new RedisTokenStore(redisConnectionFactory);
+    }
+}
+```
+4. 在授权服务器中配置
+```java
+ @Autowired
+    @Qualifier("redisTokenStore")
+    private TokenStore redisTokenStore;
+
+    /**
+     * 密码模式是直接将我们的密码传给授权服务器
+     * 使用密码所需要的配置
+     *
+     * @param endpoints
+     * @author wanglufei
+     * @date 2022/4/11 10:41 PM
+     */
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        endpoints.authenticationManager(authenticationManager)
+                .userDetailsService(userDetailsService)
+                //配置使用redis存储token 令牌
+                .tokenStore(redisTokenStore);
+    }
+```
+5. 测试
+
+原本redis
+
+![image-20220411232859444](https://bearbrick0.oss-cn-qingdao.aliyuncs.com/images/img/202204112329208.png)
+
+在去PostMan使用原来的测试
+
+![](https://bearbrick0.oss-cn-qingdao.aliyuncs.com/images/img/202204112331360.png)
+
+![](https://bearbrick0.oss-cn-qingdao.aliyuncs.com/images/img/202204112331049.png)
+
+去获取当前用户
+
+<img src="https://bearbrick0.oss-cn-qingdao.aliyuncs.com/images/img/202204112332914.png" alt="image-20220411233231230" style="zoom:50%;" />
+
+在去看看Redis中
+
+![](https://bearbrick0.oss-cn-qingdao.aliyuncs.com/images/img/202204112336154.png)
