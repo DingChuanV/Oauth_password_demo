@@ -1,11 +1,11 @@
-# Oauth_password_demo
+# 🫐Oauth_password_demo
 Spring Security OAuth2.0之密码模式
 
-## 实现原理
+## 🍈实现原理
 
 <img src="https://bearbrick0.oss-cn-qingdao.aliyuncs.com/images/img/202204111801191.png" alt="image-20220411180153181" style="zoom:50%;" />
 
-## 实现步骤
+## 🍒实现步骤
 
 和授权码模式 部署项目一致 只需要更改配置
 
@@ -117,14 +117,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 }
 ```
-## 测试
+## 🍑测试
 <img src="https://bearbrick0.oss-cn-qingdao.aliyuncs.com/images/img/202204112300354.png" alt="image-20220411230011765" style="zoom:50%;" />
 
 <img src="https://bearbrick0.oss-cn-qingdao.aliyuncs.com/images/img/202204112300696.png" alt="image-20220411225942267" style="zoom:50%;" />
 
 <img src="https://bearbrick0.oss-cn-qingdao.aliyuncs.com/images/img/202204112301466.png" alt="image-20220411230110858" style="zoom:50%;" />
 
-## 使用redis存储token 令牌
+## 🥭使用redis存储token 令牌
 因为我们的Token令牌 都是放在内存中的 这肯定是不合理的
 1. 导入依赖
 ```xml
